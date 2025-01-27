@@ -476,14 +476,41 @@ export default function Dashboard() {
                   nameKey="Region"
                   stroke="0"
                   outerRadius="80%"
-                  label={({ Region, Revenue }) =>
-                    `${Region}: $${Revenue.toLocaleString()}`
-                  }
-                >
-                  {revenueByRegion.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Pie>
+                  labelLine={false} // Remove the connecting line
+                  label={({
+                    Region,
+                    Revenue,
+                    cx,
+                    cy,
+                    midAngle,
+                    innerRadius,
+                    outerRadius,
+                  }) => {
+                    const RADIAN = Math.PI / 180;
+                    const radius =
+                      innerRadius + (outerRadius - innerRadius) * 0.5;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill="white"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize="12"
+                      >
+                        <tspan x={x} dy="-0.5em">
+                          {Region}
+                        </tspan>
+                        <tspan x={x} dy="1.2em">
+                          ${Revenue.toLocaleString()}
+                        </tspan>
+                      </text>
+                    );
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
