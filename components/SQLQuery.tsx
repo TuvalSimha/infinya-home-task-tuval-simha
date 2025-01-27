@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -9,16 +9,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { mockSalesData } from '@/lib/mockData';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { mockSalesData } from "@/lib/mockData";
 
 export default function SQLQuery() {
   const [activeQuery, setActiveQuery] = useState<number | null>(null);
 
   const queries = [
     {
-      title: 'Top 3 Products by Revenue for Each Category',
+      title: "Top 3 Products by Revenue for Each Category",
       query: `
         SELECT Category, ProductName, Revenue
         FROM (
@@ -41,7 +41,7 @@ export default function SQLQuery() {
         mockSalesData.forEach((sale) => {
           if (!result[sale.Category]) result[sale.Category] = [];
           const existingProduct = result[sale.Category].find(
-            (p) => p.ProductName === sale.ProductName
+            (p) => p.ProductName === sale.ProductName,
           );
           if (existingProduct) {
             existingProduct.Revenue += sale.Revenue;
@@ -60,7 +60,7 @@ export default function SQLQuery() {
       },
     },
     {
-      title: 'Region with Highest Revenue for Each Month',
+      title: "Region with Highest Revenue for Each Month",
       query: `
         SELECT Month, Region, Revenue
         FROM (
@@ -78,8 +78,8 @@ export default function SQLQuery() {
       execute: () => {
         const result: Record<string, { Region: string; Revenue: number }> = {};
         mockSalesData.forEach((sale) => {
-          const month = new Date(sale.Date).toLocaleString('default', {
-            month: 'short',
+          const month = new Date(sale.Date).toLocaleString("default", {
+            month: "short",
           });
           if (!result[month] || sale.Revenue > result[month].Revenue) {
             result[month] = { Region: sale.Region, Revenue: sale.Revenue };
@@ -91,7 +91,7 @@ export default function SQLQuery() {
       },
     },
     {
-      title: 'Average Revenue per Sale for Each Category',
+      title: "Average Revenue per Sale for Each Category",
       query: `
         SELECT 
           Category,
@@ -120,18 +120,18 @@ export default function SQLQuery() {
   ];
 
   return (
-    <div className='container mx-auto p-4'>
-      <h1 className='text-3xl font-bold mb-4'>SQL Queries</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">SQL Queries</h1>
       {queries.map((q, index) => (
-        <Card key={index} className='mb-4'>
+        <Card key={index} className="mb-4">
           <CardHeader>
             <CardTitle>{q.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className='bg-gray-100 p-4 rounded-md overflow-x-auto'>
+            <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto">
               <code>{q.query}</code>
             </pre>
-            <Button onClick={() => setActiveQuery(index)} className='mt-4'>
+            <Button onClick={() => setActiveQuery(index)} className="mt-4">
               Execute Query
             </Button>
             {activeQuery === index && (
@@ -148,7 +148,7 @@ export default function SQLQuery() {
                     <TableRow key={i}>
                       {Object.values(value).map((v, j) => (
                         <TableCell key={j}>
-                          {typeof v === 'number' ? v.toFixed(2) : String(v)}
+                          {typeof v === "number" ? v.toFixed(2) : String(v)}
                         </TableCell>
                       ))}
                     </TableRow>

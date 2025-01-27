@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useMemo, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   PieChart,
   Pie,
@@ -21,9 +21,10 @@ import {
   CartesianGrid,
   Legend,
   Cell,
-} from 'recharts';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { mockSalesData } from '@/lib/mockData';
+} from "recharts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { mockSalesData } from "@/lib/mockData";
+import { Button } from "./ui/button";
 
 export interface Sales {
   SalesID: number;
@@ -42,8 +43,8 @@ interface ComparisonData {
   averageTransactionValue: number;
 }
 
-export type Category = 'Books' | 'Clothing' | 'Electronics' | 'Home' | 'Toys';
-export type Region = 'North' | 'South' | 'East' | 'West';
+export type Category = "Books" | "Clothing" | "Electronics" | "Home" | "Toys";
+export type Region = "North" | "South" | "East" | "West";
 
 interface RegionRevenue {
   Region: Region;
@@ -90,20 +91,20 @@ const CustomProductTooltip = ({ active, payload }: CustomTooltipProps) => {
 
   const data = payload[0].payload;
   return (
-    <div className='bg-white p-3 border rounded-lg shadow-lg'>
-      <p className='font-semibold'>{data.name}</p>
-      <p className='text-sm text-muted-foreground'>Category: {data.category}</p>
-      <p className='text-sm'>Revenue: ${data.revenue.toLocaleString()}</p>
-      <p className='text-sm'>Quantity: {data.quantity}</p>
+    <div className="bg-white p-3 border rounded-lg shadow-lg">
+      <p className="font-semibold">{data.name}</p>
+      <p className="text-sm text-muted-foreground">Category: {data.category}</p>
+      <p className="text-sm">Revenue: ${data.revenue.toLocaleString()}</p>
+      <p className="text-sm">Quantity: {data.quantity}</p>
     </div>
   );
 };
 
 export default function Dashboard() {
-  const [selectedYear, setSelectedYear] = useState<string>('All');
-  const [selectedMonth, setSelectedMonth] = useState<string>('All');
-  const [selectedCategory, setSelectedCategory] = useState<'All' | Category>(
-    'All'
+  const [selectedYear, setSelectedYear] = useState<string>("All");
+  const [selectedMonth, setSelectedMonth] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<"All" | Category>(
+    "All",
   );
 
   const allYearsFromData = useMemo<string[]>(() => {
@@ -112,15 +113,15 @@ export default function Dashboard() {
         mockSalesData.map((sale) => {
           const date = new Date(sale.Date);
           return date.getFullYear().toString();
-        })
-      )
+        }),
+      ),
     )
-      .filter((year) => year !== 'NaN')
+      .filter((year) => year !== "NaN")
       .sort();
   }, []);
 
   const displayedMonths = useMemo<MonthData[]>(() => {
-    if (selectedYear === 'All') {
+    if (selectedYear === "All") {
       // For 'All' years: Show unique month-year combinations from data
       const monthsSet = new Set<string>();
       const monthsData: MonthData[] = [];
@@ -129,7 +130,7 @@ export default function Dashboard() {
         const date = new Date(sale.Date);
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        const monthId = `${month.toString().padStart(2, '0')}-${year}`;
+        const monthId = `${month.toString().padStart(2, "0")}-${year}`;
 
         if (!monthsSet.has(monthId) && !isNaN(year)) {
           monthsSet.add(monthId);
@@ -137,8 +138,8 @@ export default function Dashboard() {
             id: monthId,
             month,
             year,
-            display: `${date.toLocaleString('default', {
-              month: 'long',
+            display: `${date.toLocaleString("default", {
+              month: "long",
             })} ${year}`,
           });
         }
@@ -151,22 +152,22 @@ export default function Dashboard() {
     } else {
       // For specific year: Show all 12 months
       const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
       ];
 
       return months.map((monthName, index) => ({
-        id: (index + 1).toString().padStart(2, '0'),
+        id: (index + 1).toString().padStart(2, "0"),
         month: index + 1,
         display: monthName,
       }));
@@ -175,13 +176,13 @@ export default function Dashboard() {
 
   const allCategoriesFromData = useMemo<Category[]>(() => {
     return Array.from(
-      new Set(mockSalesData.map((sale) => sale.Category))
+      new Set(mockSalesData.map((sale) => sale.Category)),
     ) as Category[];
   }, []);
 
   // Reset month selection when year changes
   useEffect(() => {
-    setSelectedMonth('All');
+    setSelectedMonth("All");
   }, [selectedYear]);
 
   const filteredData = useMemo<Sales[]>(() => {
@@ -189,18 +190,18 @@ export default function Dashboard() {
       .filter((sale) => {
         const saleDate = new Date(sale.Date);
         const saleYear = saleDate.getFullYear().toString();
-        const saleMonth = (saleDate.getMonth() + 1).toString().padStart(2, '0');
+        const saleMonth = (saleDate.getMonth() + 1).toString().padStart(2, "0");
 
         const monthMatches =
-          selectedMonth === 'All' ||
-          (selectedYear === 'All'
+          selectedMonth === "All" ||
+          (selectedYear === "All"
             ? selectedMonth === `${saleMonth}-${saleYear}` // Include year in comparison
             : selectedMonth === saleMonth); // Just compare month numbers
 
         return (
-          (selectedYear === 'All' || saleYear === selectedYear) &&
+          (selectedYear === "All" || saleYear === selectedYear) &&
           monthMatches &&
-          (selectedCategory === 'All' || sale.Category === selectedCategory)
+          (selectedCategory === "All" || sale.Category === selectedCategory)
         );
       })
       .map((sale) => ({
@@ -211,15 +212,18 @@ export default function Dashboard() {
   }, [selectedYear, selectedMonth, selectedCategory]);
 
   const revenueByRegion = useMemo<RegionRevenue[]>(() => {
-    const data = filteredData.reduce<Record<Region, number>>((acc, sale) => {
-      acc[sale.Region] = (acc[sale.Region] || 0) + sale.Revenue;
-      return acc;
-    }, {} as Record<Region, number>);
+    const data = filteredData.reduce<Record<Region, number>>(
+      (acc, sale) => {
+        acc[sale.Region] = (acc[sale.Region] || 0) + sale.Revenue;
+        return acc;
+      },
+      {} as Record<Region, number>,
+    );
 
     return Object.entries(data).map(([Region, Revenue], index) => ({
       Region: Region as Region,
       Revenue,
-      fill: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'][index % 5],
+      fill: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"][index % 5],
     }));
   }, [filteredData]);
 
@@ -238,7 +242,7 @@ export default function Dashboard() {
         acc[sale.ProductName].quantity += sale.Quantity;
         return acc;
       },
-      {}
+      {},
     );
 
     return Object.values(productData)
@@ -249,30 +253,33 @@ export default function Dashboard() {
   const performanceMetrics = useMemo<PerformanceMetrics>(() => {
     // Generate time range string based on filters
     const timeRange =
-      selectedYear === 'All'
-        ? 'All Time'
-        : selectedMonth === 'All'
-        ? `Year ${selectedYear}`
-        : `${new Date(2024, parseInt(selectedMonth) - 1).toLocaleString(
-            'default',
-            { month: 'long' }
-          )} ${selectedYear}`;
+      selectedYear === "All"
+        ? "All Time"
+        : selectedMonth === "All"
+          ? `Year ${selectedYear}`
+          : `${new Date(2024, parseInt(selectedMonth) - 1).toLocaleString(
+              "default",
+              { month: "long" },
+            )} ${selectedYear}`;
 
     const regionPerformance = filteredData.reduce<
       Record<Region, PerformanceData>
-    >((acc, sale) => {
-      if (!acc[sale.Region]) {
-        acc[sale.Region] = {
-          revenue: 0,
-          transactions: 0,
-          timeRange,
-          percentageDiff: 0,
-        };
-      }
-      acc[sale.Region].revenue += sale.Revenue;
-      acc[sale.Region].transactions += 1;
-      return acc;
-    }, {} as Record<Region, PerformanceData>);
+    >(
+      (acc, sale) => {
+        if (!acc[sale.Region]) {
+          acc[sale.Region] = {
+            revenue: 0,
+            transactions: 0,
+            timeRange,
+            percentageDiff: 0,
+          };
+        }
+        acc[sale.Region].revenue += sale.Revenue;
+        acc[sale.Region].transactions += 1;
+        return acc;
+      },
+      {} as Record<Region, PerformanceData>,
+    );
 
     // Calculate average revenue for comparison
     const regionValues = Object.values(regionPerformance);
@@ -287,19 +294,22 @@ export default function Dashboard() {
     });
     const categoryPerformance = filteredData.reduce<
       Record<Category, PerformanceData>
-    >((acc, sale) => {
-      if (!acc[sale.Category]) {
-        acc[sale.Category] = {
-          revenue: 0,
-          transactions: 0,
-          timeRange,
-          percentageDiff: 0,
-        };
-      }
-      acc[sale.Category].revenue += sale.Revenue;
-      acc[sale.Category].transactions += 1;
-      return acc;
-    }, {} as Record<Category, PerformanceData>);
+    >(
+      (acc, sale) => {
+        if (!acc[sale.Category]) {
+          acc[sale.Category] = {
+            revenue: 0,
+            transactions: 0,
+            timeRange,
+            percentageDiff: 0,
+          };
+        }
+        acc[sale.Category].revenue += sale.Revenue;
+        acc[sale.Category].transactions += 1;
+        return acc;
+      },
+      {} as Record<Category, PerformanceData>,
+    );
 
     const categoryValues = Object.values(categoryPerformance);
     const avgCategoryRevenue =
@@ -313,19 +323,19 @@ export default function Dashboard() {
 
     const regionEntries = Object.entries(regionPerformance) as [
       Region,
-      PerformanceData
+      PerformanceData,
     ][];
     const categoryEntries = Object.entries(categoryPerformance) as [
       Category,
-      PerformanceData
+      PerformanceData,
     ][];
 
     return {
       lowestRegion: regionEntries.sort(
-        (a, b) => a[1].revenue - b[1].revenue
+        (a, b) => a[1].revenue - b[1].revenue,
       )[0],
       lowestCategory: categoryEntries.sort(
-        (a, b) => a[1].revenue - b[1].revenue
+        (a, b) => a[1].revenue - b[1].revenue,
       )[0],
     };
   }, [filteredData, selectedYear, selectedMonth]);
@@ -345,7 +355,7 @@ export default function Dashboard() {
         acc[sale.Region].transactions += 1;
         return acc;
       },
-      {} as Record<Region, ComparisonData>
+      {} as Record<Region, ComparisonData>,
     );
 
     return Object.values(data)
@@ -371,7 +381,7 @@ export default function Dashboard() {
         acc[sale.Category].transactions += 1;
         return acc;
       },
-      {} as Record<Category, ComparisonData>
+      {} as Record<Category, ComparisonData>,
     );
 
     return Object.values(data)
@@ -383,22 +393,22 @@ export default function Dashboard() {
   }, [filteredData]);
 
   return (
-    <div className='container mx-auto p-4'>
-      <div className='sticky top-0 bg-white z-10 pb-4'>
-        <h1 className='text-3xl font-bold mb-4 pt-4'>Dashboard</h1>
-        <div className='flex flex-wrap gap-4 mb-4'>
+    <div className="container mx-auto p-4">
+      <div className="sticky top-0 bg-white z-10 pb-4">
+        <h1 className="text-3xl font-bold mb-4 pt-4">Dashboard</h1>
+        <div className="flex flex-wrap gap-4 mb-4">
           <Select
             onValueChange={(value) => {
               setSelectedYear(value);
-              setSelectedMonth('All');
+              setSelectedMonth("All");
             }}
             value={selectedYear}
           >
-            <SelectTrigger className='w-[180px]'>
-              <SelectValue placeholder='Select Year' />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Year" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='All'>All Years</SelectItem>
+              <SelectItem value="All">All Years</SelectItem>
               {allYearsFromData.map((year) => (
                 <SelectItem key={year} value={year}>
                   {year}
@@ -406,13 +416,12 @@ export default function Dashboard() {
               ))}
             </SelectContent>
           </Select>
-
           <Select onValueChange={setSelectedMonth} value={selectedMonth}>
-            <SelectTrigger className='w-[180px]'>
-              <SelectValue placeholder='Select Month' />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Month" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='All'>All Months</SelectItem>
+              <SelectItem value="All">All Months</SelectItem>
               {displayedMonths.map((monthData) => (
                 <SelectItem key={monthData.id} value={monthData.id}>
                   {monthData.display}
@@ -420,18 +429,17 @@ export default function Dashboard() {
               ))}
             </SelectContent>
           </Select>
-
           <Select
             onValueChange={(value) =>
-              setSelectedCategory(value as 'All' | Category)
+              setSelectedCategory(value as "All" | Category)
             }
             value={selectedCategory}
           >
-            <SelectTrigger className='w-[180px]'>
-              <SelectValue placeholder='Select Category' />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='All'>All Categories</SelectItem>
+              <SelectItem value="All">All Categories</SelectItem>
               {allCategoriesFromData.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
@@ -439,24 +447,35 @@ export default function Dashboard() {
               ))}
             </SelectContent>
           </Select>
+          <div className="flex items-center">
+            <Button
+              onClick={() => {
+                setSelectedYear("All");
+                setSelectedMonth("All");
+                setSelectedCategory("All");
+              }}
+            >
+              Reset Filters
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <Card>
           <CardHeader>
             <CardTitle>Revenue by Region</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Tooltip />
                 <Pie
                   data={revenueByRegion}
-                  dataKey='Revenue'
-                  nameKey='Region'
-                  stroke='0'
-                  outerRadius='80%'
+                  dataKey="Revenue"
+                  nameKey="Region"
+                  stroke="0"
+                  outerRadius="80%"
                   label={({ Region, Revenue }) =>
                     `${Region}: $${Revenue.toLocaleString()}`
                   }
@@ -475,16 +494,16 @@ export default function Dashboard() {
             <CardTitle>Top 5 Products by Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={topProducts}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray='3 3' />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey='name'
+                  dataKey="name"
                   angle={-45}
-                  textAnchor='end'
+                  textAnchor="end"
                   height={60}
                   interval={0}
                   tick={{ fontSize: 12 }}
@@ -492,17 +511,17 @@ export default function Dashboard() {
                 <YAxis />
                 <Tooltip content={<CustomProductTooltip />} />
                 <Legend />
-                <Bar dataKey='revenue' name='Revenue'>
+                <Bar dataKey="revenue" name="Revenue">
                   {topProducts.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={
                         [
-                          '#FF6384', // Red
-                          '#36A2EB', // Blue
-                          '#FFCE56', // Yellow
-                          '#4BC0C0', // Teal
-                          '#9966FF', // Purple
+                          "#FF6384", // Red
+                          "#36A2EB", // Blue
+                          "#FFCE56", // Yellow
+                          "#4BC0C0", // Teal
+                          "#9966FF", // Purple
                         ][index % 5]
                       }
                     />
@@ -510,26 +529,26 @@ export default function Dashboard() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2'>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
               {topProducts.map((product, index) => (
                 <div
                   key={product.name}
-                  className='flex items-center space-x-2 text-sm'
+                  className="flex items-center space-x-2 text-sm"
                 >
                   <div
-                    className='w-3 h-3 rounded-full'
+                    className="w-3 h-3 rounded-full"
                     style={{
                       backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                        '#9966FF',
+                        "#FF6384",
+                        "#36A2EB",
+                        "#FFCE56",
+                        "#4BC0C0",
+                        "#9966FF",
                       ][index % 5],
                     }}
                   />
-                  <span className='font-medium'>{product.name}</span>
-                  <span className='text-muted-foreground'>
+                  <span className="font-medium">{product.name}</span>
+                  <span className="text-muted-foreground">
                     ({product.category})
                   </span>
                 </div>
@@ -539,27 +558,27 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card className='mb-4'>
+      <Card className="mb-4">
         <CardHeader>
           <CardTitle>Performance Insights</CardTitle>
         </CardHeader>
         <CardContent>
-          <Alert className='mb-4'>
+          <Alert className="mb-4">
             <AlertTitle>Areas for Improvement</AlertTitle>
             <AlertDescription>
-              <div className='mt-2'>
+              <div className="mt-2">
                 {performanceMetrics.lowestRegion && (
-                  <p className='mb-2'>
-                    • Region{' '}
+                  <p className="mb-2">
+                    • Region{" "}
                     <strong>{performanceMetrics.lowestRegion[0]}</strong> shows
                     lower performance with revenue of $
                     {performanceMetrics.lowestRegion[1].revenue.toLocaleString()}
                   </p>
                 )}
                 {performanceMetrics.lowestCategory && (
-                  <p className='mb-2'>
-                    • Category{' '}
-                    <strong>{performanceMetrics.lowestCategory[0]}</strong>{' '}
+                  <p className="mb-2">
+                    • Category{" "}
+                    <strong>{performanceMetrics.lowestCategory[0]}</strong>{" "}
                     needs attention with revenue of $
                     {performanceMetrics.lowestCategory[1].revenue.toLocaleString()}
                   </p>
@@ -568,31 +587,31 @@ export default function Dashboard() {
             </AlertDescription>
           </Alert>
 
-          <div className='grid grid-cols-1 gap-4 mb-4'>
+          <div className="grid grid-cols-1 gap-4 mb-4">
             <div>
-              <h3 className='text-lg font-semibold mb-2'>
+              <h3 className="text-lg font-semibold mb-2">
                 Region Performance Comparison
               </h3>
-              <ResponsiveContainer width='100%' height={200}>
+              <ResponsiveContainer width="100%" height={200}>
                 <BarChart
                   data={regionComparison}
-                  layout='vertical'
+                  layout="vertical"
                   margin={{ left: 50 }}
                 >
-                  <CartesianGrid strokeDasharray='3 3' />
-                  <XAxis type='number' />
-                  <YAxis dataKey='name' type='category' />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" />
                   <Tooltip
                     formatter={(value) => `$${Number(value).toLocaleString()}`}
                   />
-                  <Bar dataKey='revenue' fill='#8884d8' name='Revenue'>
+                  <Bar dataKey="revenue" fill="#8884d8" name="Revenue">
                     {regionComparison.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={
                           entry.name === performanceMetrics.lowestRegion?.[0]
-                            ? '#FF6384'
-                            : '#8884d8'
+                            ? "#FF6384"
+                            : "#8884d8"
                         }
                       />
                     ))}
@@ -602,29 +621,29 @@ export default function Dashboard() {
             </div>
 
             <div>
-              <h3 className='text-lg font-semibold mb-2'>
+              <h3 className="text-lg font-semibold mb-2">
                 Category Performance Comparison
               </h3>
-              <ResponsiveContainer width='100%' height={200}>
+              <ResponsiveContainer width="100%" height={200}>
                 <BarChart
                   data={categoryComparison}
-                  layout='vertical'
+                  layout="vertical"
                   margin={{ left: 70 }}
                 >
-                  <CartesianGrid strokeDasharray='3 3' />
-                  <XAxis type='number' />
-                  <YAxis dataKey='name' type='category' />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" />
                   <Tooltip
                     formatter={(value) => `$${Number(value).toLocaleString()}`}
                   />
-                  <Bar dataKey='revenue' fill='#8884d8' name='Revenue'>
+                  <Bar dataKey="revenue" fill="#8884d8" name="Revenue">
                     {categoryComparison.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={
                           entry.name === performanceMetrics.lowestCategory?.[0]
-                            ? '#FF6384'
-                            : '#8884d8'
+                            ? "#FF6384"
+                            : "#8884d8"
                         }
                       />
                     ))}
@@ -633,40 +652,40 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
 
-            <Alert className='mb-4'>
+            <Alert className="mb-4">
               <AlertTitle>Areas for Improvement</AlertTitle>
               <AlertDescription>
-                <div className='mt-2'>
+                <div className="mt-2">
                   {performanceMetrics.lowestRegion && (
-                    <p className='mb-2'>
-                      • Region{' '}
-                      <strong>{performanceMetrics.lowestRegion[0]}</strong>{' '}
-                      shows lower performance for{' '}
+                    <p className="mb-2">
+                      • Region{" "}
+                      <strong>{performanceMetrics.lowestRegion[0]}</strong>{" "}
+                      shows lower performance for{" "}
                       <strong>
                         {performanceMetrics.lowestRegion[1].timeRange}
-                      </strong>{' '}
+                      </strong>{" "}
                       with revenue of $
-                      {performanceMetrics.lowestRegion[1].revenue.toLocaleString()}{' '}
+                      {performanceMetrics.lowestRegion[1].revenue.toLocaleString()}{" "}
                       (
                       {performanceMetrics.lowestRegion[1].percentageDiff.toFixed(
-                        1
+                        1,
                       )}
                       % below average)
                     </p>
                   )}
                   {performanceMetrics.lowestCategory && (
-                    <p className='mb-2'>
-                      • Category{' '}
-                      <strong>{performanceMetrics.lowestCategory[0]}</strong>{' '}
-                      needs attention for{' '}
+                    <p className="mb-2">
+                      • Category{" "}
+                      <strong>{performanceMetrics.lowestCategory[0]}</strong>{" "}
+                      needs attention for{" "}
                       <strong>
                         {performanceMetrics.lowestCategory[1].timeRange}
-                      </strong>{' '}
+                      </strong>{" "}
                       with revenue of $
-                      {performanceMetrics.lowestCategory[1].revenue.toLocaleString()}{' '}
+                      {performanceMetrics.lowestCategory[1].revenue.toLocaleString()}{" "}
                       (
                       {performanceMetrics.lowestCategory[1].percentageDiff.toFixed(
-                        1
+                        1,
                       )}
                       % below average)
                     </p>

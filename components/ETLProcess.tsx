@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ETLProcess() {
   return (
@@ -9,7 +9,10 @@ export default function ETLProcess() {
           <CardTitle>Extract</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>To import the CSV file into a database, you can use the following SQL command:</p>
+          <p>
+            To import the CSV file into a database, you can use the following
+            SQL command:
+          </p>
           <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto">
             <code>{`
 COPY sales(SalesID, Date, ProductName, Category, Region, Quantity, Revenue)
@@ -19,7 +22,8 @@ CSV HEADER;
             `}</code>
           </pre>
           <p className="mt-2">
-            This command assumes you've already created a table named 'sales' with the appropriate columns.
+            This command assumes you've already created a table named 'sales'
+            with the appropriate columns.
           </p>
         </CardContent>
       </Card>
@@ -28,14 +32,19 @@ CSV HEADER;
           <CardTitle>Transform</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>To create a new column called "Profit", you can use the following SQL command:</p>
+          <p>
+            To create a new column called "Profit", you can use the following
+            SQL command:
+          </p>
           <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto">
             <code>{`
 ALTER TABLE sales ADD COLUMN Profit DECIMAL(10, 2);
 UPDATE sales SET Profit = Revenue - (Quantity * 10);
             `}</code>
           </pre>
-          <p className="mt-2">This assumes a cost of 10 per unit as specified in the task.</p>
+          <p className="mt-2">
+            This assumes a cost of 10 per unit as specified in the task.
+          </p>
         </CardContent>
       </Card>
       <Card>
@@ -44,8 +53,8 @@ UPDATE sales SET Profit = Revenue - (Quantity * 10);
         </CardHeader>
         <CardContent>
           <p>
-            To load the processed data into another system, you can use various methods depending on the target system.
-            Here are a few examples:
+            To load the processed data into another system, you can use various
+            methods depending on the target system. Here are a few examples:
           </p>
           <ol className="list-decimal pl-5 mt-2">
             <li>
@@ -66,12 +75,12 @@ SELECT * FROM source_database.sales;
               </pre>
             </li>
             <li className="mt-4">
-              Use a data integration tool like Apache NiFi or Talend for more complex ETL processes.
+              Use a data integration tool like Apache NiFi or Talend for more
+              complex ETL processes.
             </li>
           </ol>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
